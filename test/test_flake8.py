@@ -11,21 +11,28 @@ numpy.bool_
     violations = list(NumpyDTypeChecker(tree).run())
     assert len(violations) == 0
 
-def test_bool():
+def test_int():
     tree = parse('''
 import numpy
-numpy.bool
+numpy.int_
+''')
+    violations = list(NumpyDTypeChecker(tree).run())
+    assert len(violations) == 0
+
+def test_importas():
+    tree = parse('''
+import numpy as np
+np.bool
 ''')
     violations = list(NumpyDTypeChecker(tree).run())
     assert len(violations) == 1
     assert violations[0][2].startswith('NPT010 ')
 
-def test_bool_importas():
+def test_array():
     tree = parse('''
-import numpy as np
-np.bool
+import numpy
+numpy.array([1], dtype=numpy.int)
 ''')
-    violations = list(SortcmpChecker(tree).run())
+    violations = list(NumpyDTypeChecker(tree).run())
     assert len(violations) == 1
     assert violations[0][2].startswith('NPT010 ')
-
